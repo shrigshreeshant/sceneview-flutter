@@ -32,7 +32,7 @@ abstract class SceneviewFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('addNode() has not been implemented.');
   }
 
-  void dispose(int sceneId){
+  void dispose(int sceneId) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:sceneview_flutter/sceneview_flutter_platform_interface.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
 
@@ -23,5 +22,4 @@ class SceneViewController {
   void dispose() {
     SceneviewFlutterPlatform.instance.dispose(sceneId);
   }
-
 }

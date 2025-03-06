@@ -21,13 +21,11 @@ class MethodChannelSceneViewFlutter extends SceneviewFlutterPlatform {
     MethodChannel? channel = _channel;
     if (channel == null) {
       channel = MethodChannel('scene_view_$sceneId');
-      channel.setMethodCallHandler(
-              (MethodCall call) => _handleMethodCall(call, sceneId));
+      channel.setMethodCallHandler((MethodCall call) => _handleMethodCall(call, sceneId));
       _channel = channel;
     }
     return channel;
   }
-
 
   @override
   Future<void> init(int sceneId) async {

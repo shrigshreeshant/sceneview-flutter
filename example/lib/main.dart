@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sceneview_flutter/sceneview_flutter.dart';
 import 'package:sceneview_flutter/sceneview_node.dart';
 
@@ -16,6 +15,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    checkCameraPermission();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,5 +44,12 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void checkCameraPermission() async {
+    var status = await Permission.camera.status;
+    if (!status.isGranted) {
+      await Permission.camera.request();
+    }
   }
 }
