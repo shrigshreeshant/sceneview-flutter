@@ -261,6 +261,18 @@ class SceneViewWrapper(
 
 
     private fun initializeSceneView() {
+        sceneView?.apply {
+
+            onSessionUpdated = null
+            onSessionResumed = null
+            onSessionCreated = null
+            onSessionFailed = null
+            onSessionConfigChanged = null
+            onTrackingFailureChanged = null
+            destroy()
+        }
+
+        Log.i(TAG, "Activity:$activity")
         sceneView?.configureSession { config, session -> }
 
 
@@ -302,6 +314,9 @@ class SceneViewWrapper(
 
             }
             onSessionUpdated = { session, frame ->
+
+
+                Log.d("PlaneDetected", "insideSession update")
                 val updatedPlanes = session.getAllTrackables<com.google.ar.core.Plane>(com.google.ar.core.Plane::class.java)
                 val anyPlaneTracking = updatedPlanes.any { it.isTracking }
 
