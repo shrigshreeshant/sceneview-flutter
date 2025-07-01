@@ -280,6 +280,15 @@ class SceneViewWrapper(
             Log.i(TAG, "inside apply")
 
             lifecycle = applifecycle
+            sceneView?.apply {
+                onSessionUpdated = null
+                onSessionResumed = null
+                onSessionCreated = null
+                onSessionFailed = null
+                onSessionConfigChanged = null
+                onTrackingFailureChanged = null
+                destroy()
+            }
 
 
             configureSession { session, config ->
