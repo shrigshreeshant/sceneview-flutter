@@ -7,8 +7,10 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
+import android.view.PixelCopy
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -181,14 +183,14 @@ import io.github.sceneview.node.Node
 //}
 
 class SceneViewWrapper(
-    context: Context,
+   private val context: Context,
     private val activity: Activity,
     private val applifecycle: Lifecycle,
     private val _mainScope: LifecycleCoroutineScope,
     messenger: BinaryMessenger,
     private val id: Int,
     private  var isSessionConfigured: Boolean=false
-) : PlatformView, MethodCallHandler ,DefaultLifecycleObserver{
+) : PlatformView, MethodCallHandler {
 
     private val TAG = "SceneViewWrapper"
     private var sceneView: ARSceneView? = null
@@ -203,21 +205,14 @@ class SceneViewWrapper(
 
     var lastPlaneTracking = false
     var noPlaneSince: Long? = null
+
+
     override fun getView(): View {
-
-
-
-
 
         return sceneView ?: FrameLayout(activity)
     }
 
-    override fun onResume(owner: LifecycleOwner) {
-        Log.i(TAG, "Lifecycle onResume called")
 
-
-
-    }
 
     fun startBackgroundThread() {
         backgroundThread = HandlerThread("ImageProcessingThread")
@@ -240,8 +235,6 @@ class SceneViewWrapper(
         planeDetectedSink: EventChannel.EventSink? = null
     ) {
         eventSink?.let { this.eventSink = it
-
-
         }
         planeDetectedSink?.let { this.planeDetectedSink = it
         it.success(false)
@@ -252,7 +245,7 @@ class SceneViewWrapper(
 
     init {
         Log.i(TAG, "init called")
-        applifecycle.addObserver(this)
+//        applifecycle.addObserver(this)
         initializeSceneView()
 
         _channel.setMethodCallHandler(this)
@@ -261,34 +254,17 @@ class SceneViewWrapper(
 
 
     private fun initializeSceneView() {
-        sceneView?.apply {
-
-            onSessionUpdated = null
-            onSessionResumed = null
-            onSessionCreated = null
-            onSessionFailed = null
-            onSessionConfigChanged = null
-            onTrackingFailureChanged = null
-            destroy()
-        }
+        Log.i(TAG, "Activity:$sceneView")
 
         Log.i(TAG, "Activity:$activity")
-        sceneView?.configureSession { config, session -> }
+
 
 
         sceneView = ARSceneView(activity).apply {
             Log.i(TAG, "inside apply")
 
             lifecycle = applifecycle
-            sceneView?.apply {
-                onSessionUpdated = null
-                onSessionResumed = null
-                onSessionCreated = null
-                onSessionFailed = null
-                onSessionConfigChanged = null
-                onTrackingFailureChanged = null
-                destroy()
-            }
+
 
 
             configureSession { session, config ->
@@ -353,7 +329,7 @@ class SceneViewWrapper(
                 }
 
 
-                printAllNodes()
+                //printAllNodes()
 
 
 
@@ -421,24 +397,9 @@ class SceneViewWrapper(
         }
     }
 
-    private fun printAllNodes() {
-        val scene = sceneView ?: return
-        Log.i(TAG, "Printing all nodes in sceneView:")
-        scene.childNodes.forEach { node ->
-            printNodeRecursive(node, "")
-        }
-    }
 
-    private fun printNodeRecursive(node: Node, indent: String) {
-        Log.i(TAG, "$indent- Node: ${node.name ?: "Unnamed"} (${node::class.simpleName})")
-        node.childNodes.forEach { child ->
-            printNodeRecursive(child, "$indent  ")
-        }
-    }
-
-
-
-            override fun dispose() {
+    override fun dispose() {
+sceneView?.onSessionPaused
                 Log.i(TAG, "dispose called, $sceneView")
                 sceneView?.destroy()
                 sceneView = null
@@ -536,6 +497,28 @@ class SceneViewWrapper(
                     "init" -> {
                         result.success(null)
                     }
+
+                    "takePhoto" -> {
+                        if (sceneView != null) {
+                            sceneView?.planeRenderer?.isVisible=false
+                            sceneView?.invalidate()
+                            Log.d("SceneViewTakePhoto", "SceneView is not null. Attempting to take photo.")
+
+                            ARPhotoSaver.takePhoto(context, sceneView!!) { state ->
+                                Log.d("SceneViewTakePhoto", "Photo capture completed. Success: $state")
+                                result.success(state)
+                                sceneView?.planeRenderer?.isVisible=true
+
+                            }
+                        } else {
+
+                            Log.e("SceneViewTakePhoto", "SceneView is null. Cannot take photo.")
+                            result.success(false)
+                        }
+
+                    }
+
+
 
                     "addNode" -> {
                         Log.i(TAG, "addNode called from Flutter")

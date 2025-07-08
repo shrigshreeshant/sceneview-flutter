@@ -34,11 +34,15 @@ abstract class SceneviewFlutterPlatform extends PlatformInterface {
   }
 
   hitTest(double x, double y, double screenWidth, double screenHeight) {
-    throw UnimplementedError('addNode() has not been implemented.');
+    throw UnimplementedError('hitTest() has not been implemented.');
   }
 
   Stream<bool> planeDetected() {
-    throw UnimplementedError('addNode() has not been implemented.');
+    throw UnimplementedError('planeDetected() has not been implemented.');
+  }
+
+  Future<bool> takePhoto() {
+    throw UnimplementedError('takePhoto() has not been implemented.');
   }
 
   Future<void> update(

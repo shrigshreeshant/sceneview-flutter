@@ -100,6 +100,14 @@ class MethodChannelSceneViewFlutter extends SceneviewFlutterPlatform {
     }).cast<bool>();
   }
 
+  @override
+  Future<bool> takePhoto() async {
+    final result = await _channel?.invokeMethod(
+      'takePhoto',
+    );
+    return result;
+  }
+
   Future<dynamic> _handleMethodCall(MethodCall call, int mapId) async {
     switch (call.method) {
       default:

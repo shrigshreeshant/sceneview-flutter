@@ -8,10 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:sceneview_flutter/sceneview_controller.dart';
 
 class SceneView extends StatefulWidget {
-  const SceneView({
-    super.key,
-    this.onViewCreated,
-  });
+  const SceneView({super.key, this.onViewCreated});
 
   final Function(SceneViewController)? onViewCreated;
 
@@ -20,7 +17,8 @@ class SceneView extends StatefulWidget {
 }
 
 class _SceneViewState extends State<SceneView> {
-  final Completer<SceneViewController> _controller = Completer<SceneViewController>();
+  final Completer<SceneViewController> _controller =
+      Completer<SceneViewController>();
 
   @override
   Widget build(BuildContext context) {

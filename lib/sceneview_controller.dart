@@ -3,15 +3,11 @@ import 'package:sceneview_flutter/sceneview_node.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class SceneViewController {
-  SceneViewController._({
-    required this.sceneId,
-  });
+  SceneViewController._({required this.sceneId});
 
   final int sceneId;
 
-  static Future<SceneViewController> init(
-    int sceneId,
-  ) async {
+  static Future<SceneViewController> init(int sceneId) async {
     await SceneviewFlutterPlatform.instance.init(sceneId);
     return SceneViewController._(sceneId: sceneId);
   }
@@ -21,13 +17,25 @@ class SceneViewController {
   }
 
   Future<Map> hitTest(
-      double x, double y, double screenWidth, double screenHeight) async {
-    return SceneviewFlutterPlatform.instance
-        .hitTest(x, y, screenWidth, screenHeight);
+    double x,
+    double y,
+    double screenWidth,
+    double screenHeight,
+  ) async {
+    return SceneviewFlutterPlatform.instance.hitTest(
+      x,
+      y,
+      screenWidth,
+      screenHeight,
+    );
   }
 
   Stream<bool> planeDetected() {
     return SceneviewFlutterPlatform.instance.planeDetected();
+  }
+
+  Future<bool> takePhoto() {
+    return SceneviewFlutterPlatform.instance.takePhoto();
   }
 
   Future<void> update(
